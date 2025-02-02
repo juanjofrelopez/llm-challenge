@@ -81,7 +81,19 @@ curl -X POST -F "file=@<path_to_csv_file>" http://localhost:8000/upload-csv
 }
 ```
 
-# architecture
+# code architecture
+
+- **db.py**: in this class we initialize the psql connection and declare methods for inserting data from a pandas dataframe. Also another method for running sql queries. This results will be "stringyfied" to better suit the needs of the llm.
+
+- **models.py**: pydantic models for type safety.
+
+- **llm.py**: here we declare an adapter by using the openai python package to interact with the llamafile server. This runs the llama 3.2 3B model. I have customized two prompts: one for the text to SQL translation and other for the generation of humanized results gotten from the db.
+
+- **api.py**: here i instantiate the above classes and define the fastapi endpoints with its handlers.
+
+- **utils.py**: mainly methods for cleaning the csv using pandas.
+
+# services
 
 ![](docs/arch.png)
 
