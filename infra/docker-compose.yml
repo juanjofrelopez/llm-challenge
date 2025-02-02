@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=host=db port=5432 dbname=postgres user=postgres password=postgres
+      - LLM_BASE_URL=http://llama:8080/v1
+    depends_on:
+      - db
+      - llama
+
+  llama:
+    build:
+      context: .
+      dockerfile: Dockerfile.llama
+    volumes:
+      - ./model:/app/model
+    environment:
+      - MODEL_PATH=/app/model/llama
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nivii
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  model:
